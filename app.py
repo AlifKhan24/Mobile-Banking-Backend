@@ -27,13 +27,16 @@ logging.basicConfig(level=logging.DEBUG)
 app = Flask(__name__)
 app.secret_key = 'your_secret_key_here' 
 
+
 db = pymysql.connect(
-    host="localhost",
-    user="root",
-    password="janina",
-    database="mobilebanking",
-    cursorclass=pymysql.cursors.DictCursor  
+    host=os.environ.get("DB_HOST"),
+    user=os.environ.get("DB_USER"),
+    password=os.environ.get("DB_PASSWORD"),
+    database=os.environ.get("DB_NAME"),
+    port=int(os.environ.get("DB_PORT", 28470)),  # Make sure port is included!
+    cursorclass=pymysql.cursors.DictCursor
 )
+
 
 def get_user_id_from_cookie():
     return request.cookies.get("user_id")
