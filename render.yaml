@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: mobile-banking-backend
+    env: python
+    buildCommand: ""
+    startCommand: gunicorn app:app
+    pythonVersion: 3.9.13
+    plan: free
+    region: oregon
