@@ -1,3 +1,8 @@
+Flask
+gunicorn
+flask-cors
+pymysql
+
 annotated-types==0.7.0
 anyio==4.9.0
 bcrypt==4.3.0
