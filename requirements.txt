@@ -2,6 +2,10 @@ Flask
 gunicorn
 flask-cors
 pymysql
+reportlab
+bcrypt
+python-dateutil
+
 
 annotated-types==0.7.0
 anyio==4.9.0
