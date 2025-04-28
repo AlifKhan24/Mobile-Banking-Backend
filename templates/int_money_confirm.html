@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Send Money Internationally - Mobile Banking</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family:  playfair display;
+      background: url('https://i.postimg.cc/C1zXvjMF/int.avif') no-repeat center center fixed;
+      background-size: cover;
+    }
+
+    nav {
+      background-color: #0f2749;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+    }
+
+    nav img {
+      height: 40px;
+      cursor: pointer;
+    }
+
+    .form-container {
+      background-color: #0f2749;
+      color: #aac5ea;
+      width: 300px;
+      margin: 60px auto;
+      padding: 30px 40px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    }
+
+    .form-container h2 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #aac5ea;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 8px;
+      border: none;
+      border-radius: 4px;
+      background-color: #fff;
+      color: #000;
+    }
+
+    .message-box {
+      background-color: #fff;
+      color: #333;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+    }
+
+    .message-box .info-item {
+      margin-bottom: 10px;
+      font-size: 16px;
+    }
+
+    .message-box .info-item strong {
+      color: #0f2749;
+    }
+
+    .button-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .button-group button {
+      padding: 10px;
+      border: none;
+      border-radius: 4px;
+      background-color: #aac5ea;
+      color: black;
+      font-weight: bold;
+      cursor: pointer;
+      font-family:  playfair display;
+    }
+
+    .button-group button:hover {
+      background-color: #ddd;
+    }
+
+    .back-button {
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    .back-button button {
+      padding: 8px 20px;
+      background-color: #cc0000;
+      border: none;
+      border-radius: 4px;
+      color: black;
+      font-weight: bold;
+      cursor: pointer;
+      font-family:  playfair display;
+    }
+    
+    #loading {
+      text-align: center;
+      color: white;
+      display: none;
+    }
+    
+    #error-message {
+      background-color: #ffdddd;
+      color: #ff0000;
+      padding: 10px;
+      border-radius: 5px;
+      margin-bottom: 15px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav>
+    <img src="https://i.postimg.cc/nLt7Kfnk/Mobile-Banking-Logo.png" alt="Logo" onclick="goHome()" />
+  </nav>
+
+  <!-- Main Form -->
+  <div class="form-container">
+    <h2>Confirm International Transfer</h2>
+    
+    <div id="error-message"></div>
+    <div id="loading">Processing your request...</div>
+
+    <!-- Message Box -->
+    <div class="message-box">
+      <div class="info-item"><strong>Account No:</strong> <span id="account">{{ account_no }}</span></div>
+      <div class="info-item"><strong>Receiver's Name:</strong> <span id="receiver">{{ receivers_name }}</span></div>
+      <div class="info-item"><strong>Country:</strong> <span id="country">{{ country }}</span></div>
+      <div class="info-item"><strong>Amount in BDT:</strong> <span id="amount-bdt">{{ amount_in_bdt }}</span></div>
+      <div class="info-item"><strong>Amount in {{ country }} Currency:</strong> <span id="amount-foreign">{{ amount_in_selected_country }}</span></div>
+      <!-- Hidden field for trx_id -->
+      <input type="hidden" id="trx-id" value="{{ trx_id }}">
+    </div>
+
+    <div class="button-group">
+      <button onclick="confirmSend()">Confirm and Send</button>
+    </div>
+
+    <div class="back-button">
+      <button onclick="goBack()">Cancel</button>
+    </div>
+  </div>
+
+  <script>
+    function goHome() {
+      window.location.href = "/home";
+    }
+
+    function goBack() {
+      window.location.href = "/send_money_int";
+    }
+    
+    function showError(message) {
+      const errorBox = document.getElementById('error-message');
+      errorBox.textContent = message;
+      errorBox.style.display = 'block';
+      document.getElementById('loading').style.display = 'none';
+    }
+
+    function confirmSend() {
+      // Show loading indicator
+      document.getElementById('loading').style.display = 'block';
+      
+      // Disable buttons to prevent double submission
+      const buttons = document.querySelectorAll('button');
+      buttons.forEach(button => button.disabled = true);
+      
+      const formData = {
+        account_no: document.getElementById('account').textContent,
+        receivers_name: document.getElementById('receiver').textContent,
+        amount_in_bdt: document.getElementById('amount-bdt').textContent,
+        amount_in_selected_country: document.getElementById('amount-foreign').textContent,
+        country: document.getElementById('country').textContent,
+        user_id: "{{ user_id }}", // Get user_id from template variable
+        trx_id: document.getElementById('trx-id').value // Include the trx_id
+      };
+
+      fetch('/confirm_send_money', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams(formData)
+      })
+      .then(response => response.json())
+      .then(data => {
+        // Re-enable buttons
+        buttons.forEach(button => button.disabled = false);
+        document.getElementById('loading').style.display = 'none';
+        
+        if (data.status === 'success') {
+          alert(data.message);  // Show success message
+          window.location.href = '/home';  // Redirect to home page on success
+        } else {
+          showError(data.message || 'Error processing your transaction');
+        }
+      })
+      .catch(error => {
+        // Re-enable buttons
+        buttons.forEach(button => button.disabled = false);
+        document.getElementById('loading').style.display = 'none';
+        
+        console.error('Error:', error);
+        showError('Network error. Please try again later.');
+      });
+    }
+  </script>
+
+</body>
+</html>
