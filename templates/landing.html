@@ -27,7 +27,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background-image: url('https://i.postimg.cc/sDcTLSx8/mb2.jpg'); /* Replace with your image URL */
+      background-image: url('https://i.postimg.cc/sDcTLSx8/mb2.jpg');
       background-size: cover;
       background-position: center;
       opacity: 0.50;
@@ -36,6 +36,7 @@
 
     .navbar {
       display: flex;
+      flex-wrap: wrap;
       justify-content: space-between;
       align-items: center;
       padding: 1rem 2rem;
@@ -44,13 +45,22 @@
 
     .logo img {
       height: 40px;
+      max-width: 100%;
+    }
+
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      margin-top: 10px;
     }
 
     .nav-links a {
-      margin-left: 20px;
       text-decoration: none;
       font-weight: 500;
       color: #aac5ea;
+      padding: 0.4rem 0.6rem;
     }
 
     .nav-links .btn {
@@ -62,14 +72,16 @@
 
     .main-section {
       display: flex;
-      justify-content: space-between;
+      flex-wrap: wrap;
+      justify-content: center;
       align-items: center;
       padding: 2rem;
-      flex-wrap: wrap;
     }
 
     .text-content {
       max-width: 700px;
+      padding: 1rem;
+      flex: 1;
     }
 
     .text-content h1 {
@@ -100,31 +112,52 @@
       font-weight: bold;
     }
 
+    .circle-logo {
+      text-align: center;
+      flex: 1;
+      padding: 1rem;
+    }
+
     .circle-logo img {
-      width: 400px;
+      width: 300px;
       max-width: 100%;
       border-radius: 70%;
       margin-top: 1rem;
     }
 
     @media (max-width: 768px) {
-      .main-section {
+      .navbar {
         flex-direction: column;
-        text-align: center;
-      }
-
-      .text-content {
-        margin-bottom: 2rem;
+        align-items: flex-start;
       }
 
       .nav-links {
-        display: flex;
         flex-direction: column;
-        gap: 10px;
+        align-items: flex-start;
+        width: 100%;
+        margin-top: 1rem;
       }
 
-      .nav-links a {
-        margin-left: 0;
+      .main-section {
+        flex-direction: column;
+        text-align: center;
+        padding: 1rem;
+      }
+
+      .text-content h1 {
+        font-size: 1.5rem;
+      }
+
+      .features {
+        font-size: 0.95rem;
+      }
+
+      .free-account-btn {
+        padding: 0.6rem 1rem;
+      }
+
+      .circle-logo img {
+        width: 250px;
       }
     }
 
@@ -152,7 +185,6 @@
 <body>
   <header class="navbar">
     <div class="logo">
-      <!-- Clickable logo to home -->
       <a href="/">
         <img src="https://i.postimg.cc/nLt7Kfnk/Mobile-Banking-Logo.png" alt="Logo" />
       </a>
@@ -185,6 +217,5 @@
 
   <!-- FAQ Button -->
   <button class="faq-button" onclick="location.href='/faq'">FAQ</button>
-
 </body>
 </html>
